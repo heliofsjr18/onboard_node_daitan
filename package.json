@@ -1,0 +1,22 @@
+{
+  "name": "onboard_node_daitan",
+  "version": "1.0.0",
+  "description": "package_for_project",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heliofsjr18/onboard_node_daitan.git"
+  },
+  "keywords": [
+    "0"
+  ],
+  "author": "helio_ferreira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heliofsjr18/onboard_node_daitan/issues"
+  },
+  "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme"
+}
