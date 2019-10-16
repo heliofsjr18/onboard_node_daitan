@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/heliofsjr18/onboard_node_daitan/issues"
   },
-  "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme"
+  "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
