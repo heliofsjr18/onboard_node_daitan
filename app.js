@@ -3,7 +3,7 @@ const app = express();
 
 app.use(express.json());
 
-const pets = [
+var pets = [
     {
         "id":1,
         "name": "dog"
@@ -42,10 +42,23 @@ app.post('/pets', (req, res) => {
 });
 
 
+app.put('/pets/:id', (req, res) => {
+    const petFound = pets.find(p => {return p.id === parseInt(req.params.id)});
+    if(!petFound) res.status(204).send('Not Found');
+
+    petFound.name = req.body.name;
+
+    res.send(pets);
+});
+
+
 app.delete('/pets', (req, res) => {
-    const index = pets.indexOf(toString(req.body.name));
-    if(!index) return res.status(404).send('Not Found');
+    const petFound = pets.find(p => {return p.name === req.body.name});
+    if(!petFound) res.status(204).send('Not Found');
+    
+    const index = pets.indexOf(petFound);    
     pets.splice(index, 1);
+    res.send(petFound);
 });
 
 const PORT = process.env.PORT || 8080;
