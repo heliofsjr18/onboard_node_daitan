@@ -46,24 +46,30 @@ app.post('/pets', (req, res) => {
 
 app.put('/pets/:id', (req, res) => {
     const petFound = pets.find(p => {return p.id === parseInt(req.params.id)});
-    if(!petFound) res.status(204).send('Not Found');
-
-    petFound.name = req.body.name;
-    var petsConverted = JSON.stringify(pets , null, 2);
-    fs.writeFile('./pets.json', petsConverted, () =>{ console.log('all set')});
-    res.send(pets);
+    if(!petFound) {
+        res.status(404).send('Not Found');
+    }
+    else{
+        petFound.name = req.body.name;
+        var petsConverted = JSON.stringify(pets , null, 2);
+        fs.writeFile('./pets.json', petsConverted, () =>{ console.log('all set')});
+        res.send(pets);
+    }
 });
 
 
 app.delete('/pets', (req, res) => {
     const petFound = pets.find(p => {return p.name === req.body.name});
-    if(!petFound) res.status(204).send('Not Found');
-    
-    const index = pets.indexOf(petFound);    
-    pets.splice(index, 1);
-    var petsConverted = JSON.stringify(pets , null, 2);
-    fs.writeFile('./pets.json', petsConverted, () =>{ console.log('all set')});
-    res.send(petFound);
+    if(!petFound){  
+        res.status(404).send('Not Found');
+    }
+    else{
+        const index = pets.indexOf(petFound);    
+        pets.splice(index, 1);
+        var petsConverted = JSON.stringify(pets , null, 2);
+        fs.writeFile('./pets.json', petsConverted, () =>{ console.log('all set')});
+        res.send(petFound);
+    }
 });
 
 const PORT = process.env.PORT || 8080;

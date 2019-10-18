@@ -1,11 +1,7 @@
 [
   {
-    "id": 3,
-    "name": "bird"
-  },
-  {
     "id": 4,
-    "name": "tiger"
+    "name": "digimon"
   },
   {
     "id": 5,
@@ -34,21 +30,5 @@
   {
     "id": 11,
     "name": "bunny"
-  },
-  {
-    "id": 12,
-    "name": "caca"
-  },
-  {
-    "id": 13,
-    "name": "bobo"
-  },
-  {
-    "id": 14,
-    "name": "digimon"
-  },
-  {
-    "id": 14,
-    "name": "dog"
   }
 ]
