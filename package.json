@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme",
   "dependencies": {
+    "@hapi/joi": "^16.1.7",
     "express": "^4.17.1"
   }
 }
