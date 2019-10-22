@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const Business = require('../business/business');
-const businessInstance = new Business();
+const Persistence = require('../persistence/petsPersistence');
+const persistenceInstance = new Persistence();
 const Pet = require('../model/Pets');
 
 app.use(express.json());
@@ -16,21 +16,14 @@ class PetsApi {
 
     initializeRouters(){
         app.get('/pets', (req, res) => {            
-            let result = businessInstance.getAllPets();
-            let pets = [];
-            result.map(data => {
-                let pet = new Pet();
-                pet.setId(data.id);
-                pet.setName(data.name);
-                pets.push(pet);
-            });
-            res.send(pets);
+            let result = persistenceInstance.getAllPets();
+            res.send(result);
         });
     
         app.get('/pets/:id', (req, res) => {
             let pet = new Pet();
-            pet.setId(req.params.id)
-            let petFound = businessInstance.getPetById(pet);
+            pet.id = req.params.id;
+            let petFound = persistenceInstance.getPetById(pet.id);
             if(petFound != null){
                 res.status(200).send(petFound);
             }else{
@@ -40,17 +33,17 @@ class PetsApi {
     
         app.post('/pets', (req, res) => {
             let pet = new Pet();
-            pet.setName(req.body.name);
-            let result = businessInstance.insertPet(pet);
-            res.status(200).send(result);
+            pet.name = req.body.name;
+            let result = persistenceInstance.insertPet(pet);
+            res.send(result);
         });
     
     
         app.put('/pets/:id', (req, res) => {
             let pet = new Pet();
-            pet.setId(req.params.id);
-            pet.setName(req.body.name);
-            let result = businessInstance.updatePet(pet);
+            pet.id = req.params.id;
+            pet.name = req.body.name;
+            let result = persistenceInstance.updatePet(pet);
             if(result != null){
                 res.send(result);
             }
@@ -60,10 +53,10 @@ class PetsApi {
         });
     
     
-        app.delete('/pets', (req, res) => {
+        app.delete('/pets/:id', (req, res) => {
             let pet = new Pet();
-            pet.setName(req.body.name);
-            let result = businessInstance.deletePet(pet);
+            pet.id = req.params.id;
+            let result = persistenceInstance.deletePet(pet.id);
             if(result != null){
                 res.send(result);
             }else{

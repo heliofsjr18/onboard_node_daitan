@@ -9,7 +9,6 @@ const schema = Joi.object({
 
 class Business{
     
-    constructor(){}
 
     insertPet(pet){
         let result = this.validateInput(pet.name);

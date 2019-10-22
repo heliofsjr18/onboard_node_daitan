@@ -4,7 +4,7 @@
   "description": "package_for_project",
   "main": "start.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme",
   "dependencies": {
     "@hapi/joi": "^16.1.7",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "jest": "^24.9.0"
   }
 }
