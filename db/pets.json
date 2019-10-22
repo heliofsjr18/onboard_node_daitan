@@ -1,0 +1,42 @@
+[
+  {
+    "name": "dog",
+    "id": 1
+  },
+  {
+    "name": "bird",
+    "id": 2
+  },
+  {
+    "name": "pumba",
+    "id": 3
+  },
+  {
+    "name": "lion",
+    "id": 4
+  },
+  {
+    "name": "tiger",
+    "id": 5
+  },
+  {
+    "name": "cat",
+    "id": 6
+  },
+  {
+    "name": "Auau",
+    "id": 7
+  },
+  {
+    "name": "racoon",
+    "id": 8
+  },
+  {
+    "name": "digimon",
+    "id": 9
+  },
+  {
+    "name": "pernalonga",
+    "id": 10
+  }
+]
