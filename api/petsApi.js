@@ -3,6 +3,7 @@ const app = express();
 const Persistence = require('../persistence/petsPersistence');
 const persistenceInstance = new Persistence();
 const Pet = require('../model/Pets');
+const { CannotReadFile, NotFoundException } = require('../util/persistenceException');
 
 app.use(express.json());
 const PORT = process.env.PORT || 8080;
@@ -15,19 +16,25 @@ class PetsApi {
     }
 
     initializeRouters(){
-        app.get('/pets', (req, res) => {            
-            let result = persistenceInstance.getAllPets();
-            res.send(result);
+        app.get('/pets', (req, res) => {
+            try {
+                let result = persistenceInstance.getAllPets();
+                res.send(result);
+            } catch (error) {
+                res.status(500).send(JSON.stringify(error.message));
+            }            
         });
     
         app.get('/pets/:id', (req, res) => {
-            let pet = new Pet();
-            pet.id = req.params.id;
-            let petFound = persistenceInstance.getPetById(pet.id);
-            if(petFound != null){
-                res.status(200).send(petFound);
-            }else{
-                res.status(404).send('Not Found');
+            try {               
+                res.status(200).send(persistenceInstance.getPetById(req.params.id));
+            } catch (error) {            
+                switch(error.constructor){
+                    case CannotReadFile: 
+                        return res.status(500).send(JSON.stringify(error.message));
+                    case NotFoundException: 
+                        return res.status(404).send(JSON.stringify(error.message));
+                }
             }
         });
     
@@ -48,7 +55,7 @@ class PetsApi {
                 res.send(result);
             }
             else{
-                res.status(404).send('Not Found');
+                res.status(404).send(JSON.stringify('Not Found'));
             }
         });
     

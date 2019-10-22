@@ -1,5 +1,6 @@
 const fs = require('fs');
 const Pet = require('../model/Pets');
+const { CannotReadFile, NotFoundException } = require('../util/persistenceException');
 
 class PetsPersistence{
     
@@ -17,7 +18,7 @@ class PetsPersistence{
                 return objeto;
             }).sort((a, b) => {return a.id - b.id});
         } catch (error) {
-            console.log(error);
+            throw new CannotReadFile();
         }
     }
 
@@ -28,12 +29,17 @@ class PetsPersistence{
     }
 
     getPetById(id){
-        let petFound = this.findPetById(id);
-        if(petFound){
-            return petFound;
-        }else{
-            return null;
+        try {
+            let petFound = this.findPetById(id);
+            if(petFound){
+                return petFound;
+            }else{
+                throw new NotFoundException();
+            }            
+        } catch (error) {
+            throw error;
         }
+
     }
 
     insertPet(pet){
@@ -70,6 +76,7 @@ class PetsPersistence{
     }
 
     findPetById(petId){
+        // throw new CannotReadFile();
         return this.petListFile.find(p => { return p.id == petId});
     }
 
