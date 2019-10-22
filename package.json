@@ -2,7 +2,7 @@
   "name": "onboard_node_daitan",
   "version": "1.0.0",
   "description": "package_for_project",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
     "test": "test"
   },
