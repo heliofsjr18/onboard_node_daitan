@@ -54,9 +54,7 @@ class PetsApi {
     
     
         app.delete('/pets/:id', (req, res) => {
-            let pet = new Pet();
-            pet.id = req.params.id;
-            let result = persistenceInstance.deletePet(pet.id);
+            let result = persistenceInstance.deletePet(req.params.id);
             if(result != null){
                 res.send(result);
             }else{
