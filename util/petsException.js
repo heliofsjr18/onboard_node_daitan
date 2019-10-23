@@ -1,4 +1,4 @@
-class PersistenceException extends Error{
+class PetsException extends Error{
 
     constructor(message){
         super(message);
@@ -6,19 +6,20 @@ class PersistenceException extends Error{
 
 }
 
-class CannotReadFile extends PersistenceException {
+class CannotReadFile extends PetsException {
     constructor(message = "Could not read file") {
         super(message);
     }
 }
 
-class NotFoundException extends PersistenceException {
+class NotFoundException extends PetsException {
     constructor(message = 'Data not found'){
         super(message);
     }
     
 }
 
-module.exports.PersistenceException = PersistenceException;
+
+module.exports.PetsException = PetsException;
 module.exports.CannotReadFile = CannotReadFile;
 module.exports.NotFoundException = NotFoundException;
