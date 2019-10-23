@@ -1,9 +1,9 @@
 
 class Pet{
 
-    constructor(){
-        this.name = null,
-        this.id = null
+    constructor(name, id){
+        this.name = name,
+        this.id = id
     }
 }
 
