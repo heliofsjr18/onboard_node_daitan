@@ -1,94 +1,100 @@
 const fs = require('fs');
 const Pet = require('../model/Pets');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
+const write = util.promisify(fs.writeFile);
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
 class PetsPersistence{
-    
-    constructor(){
-        this.getFileData();
-    }
 
-    getFileData(){
-        try {            
-            let jsonPets = JSON.parse(fs.readFileSync('./db/pets.json', 'utf8'));
-            this.petListFile = jsonPets.map(pet => {
-                let objeto = new Pet();
-                objeto.id = pet.id;
-                objeto.name = pet.name;
-                return objeto;
-            }).sort((a, b) => {return a.id - b.id});
-        } catch (error) {
+
+    getFileData(){        
+        return readFile('./db/pets.json', 'utf8').then(res => {
+            return JSON.parse(res);
+        }).then(res => {
+            return res.map(pet => {
+                return new Pet(pet.name, pet.id);
+            })
+        }).then(petList => {
+            return petList.sort((a, b) => {return a.id - b.id});
+        }).catch(error => {
             throw new CannotReadFile();
-        }
+        });
     }
 
 
     getAllPets(){
-        this.getFileData();
-        return this.petListFile;
+        return this.getFileData().then(res =>{
+            return res;
+        }).catch(error => {
+            throw error
+        });
     }
 
     getPetById(id){
-        let petFound = this.findPetById(id);
-        if(petFound){
-            return petFound;
-        }else{
-            throw new NotFoundException();
-        }            
+        return this.getFileData().then(petList => {
+            return this.findPetById(petList, id);
+        }).catch(error => {
+            throw error;
+        });
     }
 
     insertPet(pet){
-        try {
-            let petList = this.petListFile;
-            pet.id = petList.length + 1;
+        return this.getFileData().then(petList => {
+            pet.id = petList.length +1;
             petList.push(pet);
-            this.writeFile(petList);        
-            return pet;            
-        } catch (error) {
+            return this.writeFile(petList).then(res => {
+                return pet;
+            }).catch(error => {
+                throw error;
+            });
+        }).catch(error => {
             throw error;
-        }
+        });
     }
 
     updatePet(pet){
-        const petFound = this.findPetById(pet.id);
-        if(!petFound) {
-            throw new NotFoundException();
-        }
-        else{
-            petFound.name = pet.name;
-            this.writeFile(this.petListFile);
-            return petFound;
-        }
+        return this.getFileData().then(petList => {
+            let petFound = this.findPetById(petList, pet.id);
+            petFound.name = pet.name;                
+            return this.writeFile(petList).then(result => {
+                return petFound;
+            }).catch(error => {
+                throw error;
+            })
+        }).catch(error => {
+            throw error;
+        })
     }
 
     deletePet(id){
-        let petFound = this.findPetById(id);
-        if(!petFound){  
-            throw new NotFoundException();
-        }
-        else{
-            const index = this.petListFile.indexOf(petFound);
-            this.petListFile.splice(index, 1);
-            this.writeFile(this.petListFile);
-            return(petFound);
-        }
+        return this.getFileData().then(petList => {
+            let petFound = this.findPetById(petList, id);
+            let index = petList.indexOf(petFound);
+            petList.splice(index, 1);
+            return this.writeFile(petList).then(result => {
+                return petFound;
+            }).catch(error => {
+                throw error;
+            });                
+        }).catch(error => {
+            throw error;
+        });
     }
 
-    findPetById(petId){
-        return this.petListFile.find(p => { return p.id == petId});
-    }
-
-    findPetByName(petName){
-        return this.petListFile.find(p => { return p.name == petName});
+    findPetById(petList, petId){
+        let petFound = petList.find(p => { return p.id == petId});
+        if(petFound) {return petFound;}
+        else {throw new NotFoundException();}
     }
 
     writeFile(petList){
-        try {
-            var petsConverted = JSON.stringify(petList , null, 2);
-            fs.writeFileSync('./db/pets.json', petsConverted);            
-        } catch (error) {
+        let petsConverted = JSON.stringify(petList , null, 2);
+        return write('./db/pets.json', petsConverted).then(res => {
+            return res;
+        }).catch(error => {
             throw new CannotReadFile();
-        }
+        });
     }
 }
 
