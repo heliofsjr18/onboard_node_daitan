@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Pet = require('../model/Pets');
-const { CannotReadFile, NotFoundException } = require('../util/persistenceException');
+const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
 class PetsPersistence{
     
@@ -29,31 +29,30 @@ class PetsPersistence{
     }
 
     getPetById(id){
-        try {
-            let petFound = this.findPetById(id);
-            if(petFound){
-                return petFound;
-            }else{
-                throw new NotFoundException();
-            }            
-        } catch (error) {
-            throw error;
-        }
-
+        let petFound = this.findPetById(id);
+        if(petFound){
+            return petFound;
+        }else{
+            throw new NotFoundException();
+        }            
     }
 
     insertPet(pet){
-        let petList = this.petListFile;
-        pet.id = petList.length + 1;
-        petList.push(pet);
-        this.writeFile(petList);        
-        return pet;
+        try {
+            let petList = this.petListFile;
+            pet.id = petList.length + 1;
+            petList.push(pet);
+            this.writeFile(petList);        
+            return pet;            
+        } catch (error) {
+            throw error;
+        }
     }
 
     updatePet(pet){
         const petFound = this.findPetById(pet.id);
         if(!petFound) {
-            return null;
+            throw new NotFoundException();
         }
         else{
             petFound.name = pet.name;
@@ -65,7 +64,7 @@ class PetsPersistence{
     deletePet(id){
         let petFound = this.findPetById(id);
         if(!petFound){  
-            return null;
+            throw new NotFoundException();
         }
         else{
             const index = this.petListFile.indexOf(petFound);
@@ -76,7 +75,6 @@ class PetsPersistence{
     }
 
     findPetById(petId){
-        // throw new CannotReadFile();
         return this.petListFile.find(p => { return p.id == petId});
     }
 
@@ -85,8 +83,12 @@ class PetsPersistence{
     }
 
     writeFile(petList){
-        var petsConverted = JSON.stringify(petList , null, 2);
-        fs.writeFile('./db/pets.json', petsConverted, () =>{ console.log('all set')});
+        try {
+            var petsConverted = JSON.stringify(petList , null, 2);
+            fs.writeFileSync('./db/pets.json', petsConverted);            
+        } catch (error) {
+            throw new CannotReadFile();
+        }
     }
 }
 
