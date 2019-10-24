@@ -9,7 +9,7 @@ class PetsPersistence{
 
 
     getFileData(){        
-        return readFile('./db/pets.json', 'utf8').then(res => {
+        return readFile('./db1/pets.json', 'utf8').then(res => {
             return JSON.parse(res);
         }).then(res => {
             return res.map(pet => {
@@ -23,7 +23,7 @@ class PetsPersistence{
     }
 
 
-    getAllPets(){
+    async getAllPets(){
         return this.getFileData().then(res =>{
             return res;
         }).catch(error => {

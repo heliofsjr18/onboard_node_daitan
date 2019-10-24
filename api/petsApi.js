@@ -16,12 +16,14 @@ class PetsApi {
     }
 
     initializeRouters(){
-        app.get('/pets', (req, res) => {
-            return persistenceInstance.getAllPets().then(petList =>{
+        app.get('/pets', async (req, res) => {
+
+            try {
+                let petList = await persistenceInstance.getAllPets();
                 return res.status(200).send(petList);
-            }).catch(error => {
+            } catch (error) {
                 return res.status(500).send(JSON.stringify(error.message));
-            });      
+            }
         });
     
         app.get('/pets/:id', (req, res) => {
