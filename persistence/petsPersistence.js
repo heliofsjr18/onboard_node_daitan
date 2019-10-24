@@ -1,15 +1,17 @@
 const fs = require('fs');
 const Pet = require('../model/Pets');
 const util = require('util');
-const readFile = util.promisify(fs.readFile);
 const write = util.promisify(fs.writeFile);
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
 class PetsPersistence{
 
+    constructor(fileReader){
+        this.fileReader = fileReader;
+    }
 
-    getFileData(){        
-        return readFile('./db/pets.json', 'utf8').then(res => {
+    async getFileData(){        
+        return this.fileReader('./db/pets.json', 'utf8').then(res => {
             return JSON.parse(res);
         }).then(res => {
             return res.map(pet => {
@@ -17,7 +19,7 @@ class PetsPersistence{
             })
         }).then(petList => {
             return petList.sort((a, b) => {return a.id - b.id});
-        }).catch(error => {
+        }).catch(error => {            
             throw new CannotReadFile();
         });
     }
