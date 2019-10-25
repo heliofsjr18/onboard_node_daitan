@@ -256,14 +256,14 @@ describe('petPersistence', () =>{
 
         });
 
-        describe('When an error occurs', ()=>{
+        describe('When data not found', ()=>{
             beforeEach(()=>{
                 fileReader = jest.fn().mockResolvedValue(petList);
                 writeFile = jest.fn().mockRejectedValue(new Error());
                 instance = new petsPersistence(fileReader, writeFile);
             })
 
-            test('Catch the error on the return of the function', async()=>{
+            test('Throws a CannotReadFile Error', async()=>{
                 try {
                     await instance.deletePet(999);
                 } catch (error) {
