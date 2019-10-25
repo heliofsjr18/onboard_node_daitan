@@ -104,18 +104,36 @@ describe('petPersistence', () =>{
         test('valid object on return of the function', async() =>{
             let petObject = await instance.getPetById(2);
             expect(petObject).toBeInstanceOf(Pet);
-        });       
+        });    
+        
+        
+        describe('When Could not read a file', () =>{
 
-        describe('When an error occurs', () =>{            
+            beforeEach(()=>{
+                fileReader = jest.fn().mockRejectedValue(new Error());
+                instance = new petsPersistence(fileReader, writeFile);
+            });
+
+            test('Throws a CannotReadFile Error', async () =>{
+                try {
+                    await instance.getPetById();
+                } catch(error) {
+                    expect(error).toBeInstanceOf(CannotReadFile);
+                }
+            });
+
+        });
+
+        describe('When data not found', () =>{            
             
-            test('test object not Found', async() =>{         
+            test('throws a NotFoundException error', async() =>{         
                 try {
                     await instance.getPetById(999);
                 } catch (error) {
                     expect(error).toBeInstanceOf(NotFoundException);
                 }       
             });
-        })        
+        }); 
     })
 
 
@@ -131,6 +149,7 @@ describe('petPersistence', () =>{
             let result = await instance.insertPet(pet);
             expect(result).toBeInstanceOf(Pet);
         })
+        
 
         describe('When and error occurs', ()=>{
 
@@ -150,6 +169,7 @@ describe('petPersistence', () =>{
             })
         })
     })
+
     describe('#updatePet', ()=>{
 
         beforeEach(()=>{
@@ -166,7 +186,27 @@ describe('petPersistence', () =>{
             expect(petReturn).toBeInstanceOf(Pet);
         })
 
-        describe('When an error occurs', ()=>{
+
+        describe('When Could not read a file', () =>{
+
+            beforeEach(()=>{
+                fileReader = jest.fn().mockRejectedValue(new Error());
+                writeFile = jest.fn().mockResolvedValue(petMock);
+                instance = new petsPersistence(fileReader, writeFile);
+            });
+
+            test('Throws a CannotReadFile Error', async () =>{
+                try {
+                    let petUpdate = new Pet();
+                    await instance.updatePet(petUpdate);
+                } catch(error) {
+                    expect(error).toBeInstanceOf(CannotReadFile);
+                }
+            });
+
+        });
+
+        describe('When data not found', ()=>{
 
             beforeEach(() => {
                 fileReader = jest.fn().mockResolvedValue(petList);
@@ -174,7 +214,7 @@ describe('petPersistence', () =>{
                 instance = new petsPersistence(fileReader, writeFile);
             })
 
-            test('could not read the file', async ()=>{
+            test('throws a NotFoundException error', async ()=>{
                 try {
                     let petUpdate = new Pet();
                     await instance.updatePet(petUpdate);
@@ -196,6 +236,24 @@ describe('petPersistence', () =>{
         test('pet Object on the return of the function', async()=>{            
             let petDeleted = await instance.deletePet(2);
             expect(petDeleted).toBeInstanceOf(Pet);
+        });
+
+        describe('When Could not read a file', () =>{
+
+            beforeEach(()=>{
+                fileReader = jest.fn().mockRejectedValue(new Error());
+                writeFile = jest.fn().mockResolvedValue(petMock);
+                instance = new petsPersistence(fileReader, writeFile);
+            });
+
+            test('Throws a CannotReadFile Error', async () =>{
+                try {
+                    await instance.deletePet(2);
+                } catch(error) {
+                    expect(error).toBeInstanceOf(CannotReadFile);
+                }
+            });
+
         });
 
         describe('When an error occurs', ()=>{
