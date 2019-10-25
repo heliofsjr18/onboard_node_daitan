@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
 const Persistence = require('../persistence/petsPersistence');
-const persistenceInstance = new Persistence();
+const fs = require('fs');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
+const write = util.promisify(fs.writeFile);
+const persistenceInstance = new Persistence(readFile, write);
 const Pet = require('../model/Pets');
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
