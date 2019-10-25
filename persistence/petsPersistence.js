@@ -9,7 +9,7 @@ class PetsPersistence{
 
 
     getFileData(){        
-        return readFile('./db1/pets.json', 'utf8').then(res => {
+        return readFile('./db/pets.json', 'utf8').then(res => {
             return JSON.parse(res);
         }).then(res => {
             return res.map(pet => {
@@ -31,7 +31,7 @@ class PetsPersistence{
         });
     }
 
-    getPetById(id){
+    async getPetById(id){
         return this.getFileData().then(petList => {
             return this.findPetById(petList, id);
         }).catch(error => {
@@ -39,7 +39,7 @@ class PetsPersistence{
         });
     }
 
-    insertPet(pet){
+    async insertPet(pet){
         return this.getFileData().then(petList => {
             pet.id = petList.length +1;
             petList.push(pet);
@@ -53,7 +53,7 @@ class PetsPersistence{
         });
     }
 
-    updatePet(pet){
+    async updatePet(pet){
         return this.getFileData().then(petList => {
             let petFound = this.findPetById(petList, pet.id);
             petFound.name = pet.name;                
@@ -67,7 +67,7 @@ class PetsPersistence{
         })
     }
 
-    deletePet(id){
+    async deletePet(id){
         return this.getFileData().then(petList => {
             let petFound = this.findPetById(petList, id);
             let index = petList.indexOf(petFound);
