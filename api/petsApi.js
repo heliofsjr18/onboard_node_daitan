@@ -4,7 +4,8 @@ const Persistence = require('../persistence/petsPersistence');
 const fs = require('fs');
 const util = require('util');
 const readFile = util.promisify(fs.readFile);
-const persistenceInstance = new Persistence(readFile);
+const write = util.promisify(fs.writeFile);
+const persistenceInstance = new Persistence(readFile, write);
 const Pet = require('../model/Pets');
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
 

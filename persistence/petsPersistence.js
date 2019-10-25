@@ -1,13 +1,11 @@
-const fs = require('fs');
 const Pet = require('../model/Pets');
-const util = require('util');
-const write = util.promisify(fs.writeFile);
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
 class PetsPersistence{
 
-    constructor(fileReader){
+    constructor(fileReader, write){
         this.fileReader = fileReader;
+        this.write = write;
     }
 
     async getFileData(){        
@@ -90,9 +88,9 @@ class PetsPersistence{
         else {throw new NotFoundException();}
     }
 
-    writeFile(petList){
+    async writeFile(petList){
         let petsConverted = JSON.stringify(petList , null, 2);
-        return write('./db/pets.json', petsConverted).then(res => {
+        return this.write('./db/pets.json', petsConverted).then(res => {
             return res;
         }).catch(error => {
             throw new CannotReadFile();
