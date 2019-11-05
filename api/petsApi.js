@@ -5,9 +5,9 @@ const fs = require('fs');
 const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const write = util.promisify(fs.writeFile);
-const persistenceInstance = new Persistence(readFile, write);
 const Pet = require('../model/Pets');
 const { CannotReadFile, NotFoundException } = require('../util/petsException');
+const { DbConnector } = require('../db/dbConnector');
 
 app.use(express.json());
 const PORT = process.env.PORT || 8080;
@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 8080;
 class PetsApi {
 
     constructor(){
+        this.persistenceInstance = new Persistence(readFile, write, DbConnector);
         this.initializeRouters();     
         this.startServer();
     }
@@ -23,7 +24,7 @@ class PetsApi {
         app.get('/pets', async (req, res) => {
 
             try {
-                let petList = await persistenceInstance.getAllPets();
+                let petList = await this.persistenceInstance.getAllPets();
                 return res.status(200).send(petList);
             } catch (error) {
                 return res.status(500).send(JSON.stringify(error.message));
@@ -32,7 +33,7 @@ class PetsApi {
     
         app.get('/pets/:id', async (req, res) => {
             try {
-                let petFound = await persistenceInstance.getPetById(req.params.id);
+                let petFound = await this.persistenceInstance.getPetById(req.params.id);
                 return res.status(200).send(petFound);
             } catch (error) {
                 switch(error.constructor){
@@ -48,7 +49,7 @@ class PetsApi {
             let pet = new Pet();
             pet.name = req.body.name;
             try {
-                let result = await persistenceInstance.insertPet(pet);
+                let result = await this.persistenceInstance.insertPet(pet);
                 return res.status(200).send(result);
                 
             } catch(error) {
@@ -62,7 +63,7 @@ class PetsApi {
             pet.id = req.params.id;
             pet.name = req.body.name;
             try{
-                let result = await persistenceInstance.updatePet(pet);
+                let result = await this.persistenceInstance.updatePet(pet);
                 return res.status(200).send(result);
             } catch(error) {
                 switch (error.constructor) {
@@ -77,7 +78,7 @@ class PetsApi {
     
         app.delete('/pets/:id', async (req, res) => {
             try{
-                let result = await persistenceInstance.deletePet(req.params.id);
+                let result = await this.persistenceInstance.deletePet(req.params.id);
                 res.status(200).send(result);
             } catch(error){
                 switch (error.constructor) {

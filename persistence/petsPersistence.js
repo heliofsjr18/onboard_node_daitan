@@ -3,9 +3,10 @@ const { CannotReadFile, NotFoundException } = require('../util/petsException');
 
 class PetsPersistence{
 
-    constructor(fileReader, write){
+    constructor(fileReader, write, dbConnector){
         this.fileReader = fileReader;
         this.write = write;
+        this.dbConnector = new dbConnector();
     }
 
     async getFileData(){        
@@ -22,13 +23,21 @@ class PetsPersistence{
         });
     }
 
+    async getDbData(){
+        return this.dbConnector.find();
+    }
+
+
+    // async getAllPets(){
+    //     return this.getFileData().then(res =>{
+    //         return res;
+    //     }).catch(error => {
+    //         throw error
+    //     });
+    // }
 
     async getAllPets(){
-        return this.getFileData().then(res =>{
-            return res;
-        }).catch(error => {
-            throw error
-        });
+        return await this.getDbData();
     }
 
     async getPetById(id){
