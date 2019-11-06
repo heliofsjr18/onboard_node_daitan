@@ -4,6 +4,7 @@
   "description": "package_for_project",
   "main": "start.js",
   "scripts": {
+    "deploy": "serverless deploy -v",
     "test": "jest"
   },
   "repository": {
@@ -21,7 +22,8 @@
   "homepage": "https://github.com/heliofsjr18/onboard_node_daitan#readme",
   "dependencies": {
     "@hapi/joi": "^16.1.7",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "serverless": "^1.57.0"
   },
   "devDependencies": {
     "jest": "^24.9.0"
